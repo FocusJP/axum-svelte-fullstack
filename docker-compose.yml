@@ -1,0 +1,33 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: local.Dockerfile
+    container_name: api
+    depends_on:
+      - database
+      - otel
+    ports:
+      - "8080:8080"
+    env_file: ".env"
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@database:5432/postgres"
+      OTEL_ENDPOINT: "http://otel:4317"
+
+  database:
+    container_name: database
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  otel:
+    image: jaegertracing/all-in-one
+    container_name: otel
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"
+      - "4317:4317"

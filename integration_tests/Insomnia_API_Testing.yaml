@@ -1,0 +1,106 @@
+type: collection.insomnia.rest/5.0
+name: API Testing 2
+meta:
+  id: wrk_6de57c403cac4bc2b120c41b4c36e578
+  created: 1756428600280
+  modified: 1756843291745
+  description: ""
+collection:
+  - name: Auth
+    meta:
+      id: fld_e0ad2bb3d03a4d2c87b5d76dbee1c141
+      created: 1756843297537
+      modified: 1757040493921
+      sortKey: -1756843297737
+      description: ""
+    children:
+      - url: https://{{auth_domain}}/oauth/token
+        name: M2M Token
+        meta:
+          id: req_6dd9738b3d2a4440afd0a4aa5b0bd7a4
+          created: 1756428603465
+          modified: 1757040491689
+          isPrivate: false
+          description: ""
+          sortKey: -1756843431908
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "audience": "{{audience}}",
+              "grant_type": "client_credentials",
+              "client_id": "{{client_id}}",
+              "client_secret": "{{_.vault.client_secret}}",
+            	"x-integration-user": "integration-user-1"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - id: pair_2306bb28c6e8463cb9b0bbfa97bd2eb1
+            name: Accept-Encoding
+            value: "*"
+            description: ""
+            disabled: false
+        scripts:
+          afterResponse: |-
+            insomnia.test('Set Access Token', () => {
+              insomnia.expect(insomnia.response.code).to.equal(200);
+            	
+            	const accessToken = insomnia.response.json().access_token;
+            	
+            	insomnia.environment.set("access_token", accessToken);
+            });
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: SSA
+    meta:
+      id: fld_f3dd4d87850545e8af8230326c636fa0
+      created: 1756844530458
+      modified: 1756844575983
+      sortKey: -1756843297637
+      description: ""
+    children:
+      - url: http://localhost:8080/ssa/name-stats
+        name: Name Stats
+        meta:
+          id: req_8d628c1dbd6548a78218f12171c7d78d
+          created: 1756844547473
+          modified: 1757039174394
+          isPrivate: false
+          description: ""
+          sortKey: -1756844549515
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "end_year": 2022,
+              "names": [
+                "Foo",
+            		"Bar"
+              ],
+              "start_year": 2020
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+    authentication:
+      type: bearer
+      token: "{{access_token}}"

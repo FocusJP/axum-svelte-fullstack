@@ -1,0 +1,13 @@
+[package]
+name = "database_migrations"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.99"
+dotenv = "0.15.0"
+native-tls = "0.2.14"
+postgres-native-tls = "0.5.1"
+refinery = { version = "0.8.16", features = ["tokio-postgres"] }
+tokio = { version = "1.47.1", features = ["full"] }
+tokio-postgres = "0.7.13"
