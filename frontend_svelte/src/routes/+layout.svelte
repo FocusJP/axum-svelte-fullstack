@@ -10,5 +10,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<Header />
-{@render children?.()}
+<div class="flex flex-col h-screen">
+	<Header />
+	{@render children?.()}
+</div>

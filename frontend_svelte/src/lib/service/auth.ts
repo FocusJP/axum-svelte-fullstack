@@ -14,8 +14,12 @@ userManagerSettings.userStore = new WebStorageStateStore({ store: window.localSt
 // Main API for auth flow
 export const userManager = new UserManager(userManagerSettings);
 
-// Ensure we capture the initial state if user already authenticated in browser.
-userStore.value = await userManager.getUser();
+// Ensure we capture the initial state if user already authenticated
+// and the access token is not expired.
+const storedUser = await userManager.getUser();
+if (false === storedUser?.expired) {
+	userStore.value = storedUser;
+}
 
 // Fires after Sign In redirect flow
 userManager.events.addUserLoaded((user) => {
